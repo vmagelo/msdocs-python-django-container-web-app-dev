@@ -1,6 +1,5 @@
 import os
 from .settings import *
-from .get_token import get_token
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

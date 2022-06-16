@@ -9,25 +9,26 @@ from django.db.models import Avg, Count
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib import messages
-from requests import RequestException, exceptions
-
 
 # Create your views here.
 
 def index(request):
-    print('Request for index page received')
+    print('Request for index page received')  
 
     collection = mongodb.get_collection()
     results_restaurant_cursor = collection.find({"type" : "restaurant"})
 
-    # Get the list of restaurants
+    # Get the list of restaurants   
     restaurants_annotated = []
     for record in results_restaurant_cursor:
         # For each restaurant record, get the list of reviews so we can calculate average rating
         print(record.get("name") + ", " + str(record.get("_id")))
         review_count = collection.count_documents({"type" : "review", "restaurant" : record.get("_id")})
-        avg_rating_group = collection.aggregate([{"$match" : {"type" : "review", "restaurant" : record.get("_id")}}, {"$group" : {"_id" : "$restaurant", "avg_rating" : {"$avg" : "$rating"}}}])
-        avg_rating = avg_rating_group.next().get("avg_rating") 
+        if review_count > 0:
+            avg_rating_group = collection.aggregate([{"$match" : {"type" : "review", "restaurant" : record.get("_id")}}, {"$group" : {"_id" : "$restaurant", "avg_rating" : {"$avg" : "$rating"}}}])
+            avg_rating = avg_rating_group.next().get("avg_rating") 
+        else:
+            avg_rating = 0
 
         new_record = record
         new_record.update({"review_count" : review_count, "avg_rating" : avg_rating})  

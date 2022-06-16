@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 def get_collection():
     # Get connection info from environment variables
-    load_dotenv()
+    load_dotenv("../.env.local")
     CONNECTION_STRING = os.getenv('CONNECTION_STRING')
     DB_NAME = os.getenv('DB_NAME')
     COLLECTION_NAME = os.getenv('COLLECTION_NAME')

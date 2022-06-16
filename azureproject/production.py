@@ -1,6 +1,5 @@
 import os
 from .settings import *
-from .get_token import get_token
 
 # Configure the domain name using the environment variable
 # that Azure automatically creates for us.

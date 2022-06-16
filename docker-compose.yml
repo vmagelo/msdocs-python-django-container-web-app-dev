@@ -3,6 +3,10 @@ version: '3.4'
 services:
   msdocspythondjangocontainerwebappdev:
     image: msdocspythondjangocontainerwebappdev
+    environment:
+      - CONNECTION_STRING=value
+      - DB_NAME=value
+      - COLLECTION_NAME=value
     build:
       context: .
       dockerfile: ./Dockerfile
