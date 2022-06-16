@@ -9,6 +9,7 @@ from django.db.models import Avg, Count
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib import messages
+from bson import ObjectId
 
 # Create your views here.
 
@@ -23,30 +24,36 @@ def index(request):
     for record in results_restaurant_cursor:
         # For each restaurant record, get the list of reviews so we can calculate average rating
         print(record.get("name") + ", " + str(record.get("_id")))
-        review_count = collection.count_documents({"type" : "review", "restaurant" : record.get("_id")})
-        if review_count > 0:
-            avg_rating_group = collection.aggregate([{"$match" : {"type" : "review", "restaurant" : record.get("_id")}}, {"$group" : {"_id" : "$restaurant", "avg_rating" : {"$avg" : "$rating"}}}])
-            avg_rating = avg_rating_group.next().get("avg_rating") 
-        else:
-            avg_rating = 0
-
+        review_count, avg_rating = get_review_stats(str(record.get("_id")))
         new_record = record
-        new_record.update({"review_count" : review_count, "avg_rating" : avg_rating})  
+        new_record.update({"review_count" : review_count, "avg_rating" : avg_rating, "id" : str(record.get("_id"))})  
         restaurants_annotated.append(new_record)        
 
     return render(request, 'restaurant_review/index.html', {'restaurants': restaurants_annotated })
 
+def get_review_stats(id):
+    collection = mongodb.get_collection()
+    review_count = collection.count_documents({"type" : "review", "restaurant" : ObjectId(id)})
+    if review_count > 0:
+        avg_rating_group = collection.aggregate([{"$match" : {"type" : "review", "restaurant" : ObjectId(id)}}, {"$group" : {"_id" : "$restaurant", "avg_rating" : {"$avg" : "$rating"}}}])
+        avg_rating = avg_rating_group.next().get("avg_rating") 
+    else:
+        avg_rating = 0
+    return review_count, avg_rating
 
 def details(request, id):
+    collection = mongodb.get_collection()
     print('Request for restaurant details page received')
 
-    try: 
-        restaurant = Restaurant.objects.annotate(avg_rating=Avg('review__rating')).annotate(review_count=Count('review')).get(pk=id)
-    except Restaurant.DoesNotExist:
-        raise Http404("Restaurant doesn't exist")
-    return render(request, 'restaurant_review/details.html', {'restaurant': restaurant, 
-        'image_path': image_path})
-
+    cursor = collection.find({"type" : "restaurant", "_id" : ObjectId(id)})
+    restaurant = cursor.next()
+    if cursor.retrieved != 0:
+        review_count, avg_rating = get_review_stats(id)
+        restaurant_annotated = restaurant
+        restaurant_annotated.update({"review_count" : review_count, "avg_rating" : avg_rating, "id" : str(restaurant.get("_id"))})  
+    else:
+        raise Http404("Restaurant not found")
+    return render(request, 'restaurant_review/details.html', {'restaurant': restaurant_annotated})
 
 def create_restaurant(request):
     print('Request for add restaurant page received')
@@ -65,13 +72,11 @@ def add_restaurant(request):
         messages.add_message(request, messages.INFO, 'Restaurant not added. Include at least a restaurant name and description.')
         return HttpResponseRedirect(reverse('create_restaurant'))  
     else:
-        restaurant = Restaurant()
-        restaurant.name = name
-        restaurant.street_address = street_address
-        restaurant.description = description
-        Restaurant.save(restaurant)
+        collection = mongodb.get_collection()
+        restaurant = mongodb.create_restaurant_record(name, street_address, description)
+        id = collection.insert_one(restaurant).inserted_id
                 
-        return HttpResponseRedirect(reverse('details', args=(restaurant.id,)))
+        return HttpResponseRedirect(reverse('details', args=(id,)))
 
 def add_review(request, id):
     try: 

@@ -41,7 +41,6 @@
                     <th>User</th>
                     <th>Rating</th>
                     <th>Review</th>
-                    <th>Photo</th>
                 </tr>
             </thead>
             <tbody>
@@ -51,14 +50,6 @@
                         <td>{{ review.user_name }}</td>
                         <td>{{ review.rating }}</td>
                         <td>{{ review.review_text }}</td>
-                        <td>
-                          {% if review.image_name %}
-                            <a href="{{image_path}}/{{review.image_name}}">
-                              <img height="40" src="{{image_path}}/{{review.image_name}}"/>
-                            </a>
-                          {% endif %}
-                        </td>
-
                     </tr>
                 {% endfor %}
             </tbody>
@@ -110,10 +101,6 @@
                   <div class="mb-3">
                       <label for="review_text" class="form-label fw-bold">Comments</label>
                       <input type="text" class="form-control" id="review_text" name="review_text">
-                  </div>
-                  <div class="mb-3">
-                    <label for="reviewImage" class="form-label">Add a photo (limits: 1 image, less than 2 MB, png or jpg)</label>
-                    <input type="file" class="form-control" id="reviewImage" name="reviewImage" accept="image/png, image/jpeg">                    
                   </div>
               </div>
               <div class="modal-footer">
