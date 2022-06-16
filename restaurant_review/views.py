@@ -1,34 +1,43 @@
 import uuid
 import os
+
+from . import mongodb
+
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import render
 from django.db.models import Avg, Count
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib import messages
-from azure.identity import DefaultAzureCredential
-from azure.storage.blob import BlobServiceClient
 from requests import RequestException, exceptions
-from azureproject.get_token import get_token
 
-from restaurant_review.models import Restaurant, Review
 
 # Create your views here.
 
 def index(request):
     print('Request for index page received')
-    get_token()
-    restaurants = Restaurant.objects.annotate(avg_rating=Avg('review__rating')).annotate(review_count=Count('review'))
-    return render(request, 'restaurant_review/index.html', {'restaurants': restaurants })
+
+    collection = mongodb.get_collection()
+    results_restaurant_cursor = collection.find({"type" : "restaurant"})
+
+    # Get the list of restaurants
+    restaurants_annotated = []
+    for record in results_restaurant_cursor:
+        # For each restaurant record, get the list of reviews so we can calculate average rating
+        print(record.get("name") + ", " + str(record.get("_id")))
+        review_count = collection.count_documents({"type" : "review", "restaurant" : record.get("_id")})
+        avg_rating_group = collection.aggregate([{"$match" : {"type" : "review", "restaurant" : record.get("_id")}}, {"$group" : {"_id" : "$restaurant", "avg_rating" : {"$avg" : "$rating"}}}])
+        avg_rating = avg_rating_group.next().get("avg_rating") 
+
+        new_record = record
+        new_record.update({"review_count" : review_count, "avg_rating" : avg_rating})  
+        restaurants_annotated.append(new_record)        
+
+    return render(request, 'restaurant_review/index.html', {'restaurants': restaurants_annotated })
 
 
 def details(request, id):
     print('Request for restaurant details page received')
-    get_token()
-
-    # Get account_url based on environment
-    account_url = get_account_url()
-    image_path = account_url + "/" + os.environ['STORAGE_CONTAINER_NAME']
 
     try: 
         restaurant = Restaurant.objects.annotate(avg_rating=Avg('review__rating')).annotate(review_count=Count('review')).get(pk=id)
@@ -44,7 +53,6 @@ def create_restaurant(request):
     return render(request, 'restaurant_review/create_restaurant.html')
 
 def add_restaurant(request):
-    get_token()
     try:
         name = request.POST['restaurant_name']
         street_address = request.POST['street_address']
@@ -65,7 +73,6 @@ def add_restaurant(request):
         return HttpResponseRedirect(reverse('details', args=(restaurant.id,)))
 
 def add_review(request, id):
-    get_token()
     try: 
         restaurant = Restaurant.objects.annotate(avg_rating=Avg('review__rating')).annotate(review_count=Count('review')).get(pk=id)
     except Restaurant.DoesNotExist:
@@ -91,9 +98,6 @@ def add_review(request, id):
             if (image_data.size > 2048000):
                 messages.add_message(request, messages.INFO, 'Image too big, try again.')
                 return HttpResponseRedirect(reverse('details', args=(id,)))  
-
-            # Get account_url based on environment
-            account_url = get_account_url()
 
             # Create client
             azure_credential = DefaultAzureCredential(exclude_shared_token_cache_credential=True)
@@ -125,10 +129,3 @@ def add_review(request, id):
         Review.save(review)
                 
     return HttpResponseRedirect(reverse('details', args=(id,)))
-
-def get_account_url():
-    # Create LOCAL_USE_AZURE_STORAGE environment variable to use Azure Storage locally. 
-    if 'WEBSITE_HOSTNAME' in os.environ or ("LOCAL_USE_AZURE_STORAGE" in os.environ):
-        return "https://%s.blob.core.windows.net" % os.environ['STORAGE_ACCOUNT_NAME']
-    else:
-        return os.environ['STORAGE_ACCOUNT_NAME']
