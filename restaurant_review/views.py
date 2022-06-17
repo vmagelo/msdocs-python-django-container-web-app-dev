@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.contrib import messages
 from bson import ObjectId
+from requests import RequestException, exceptions
 
 # Create your views here.
 
@@ -51,13 +52,15 @@ def details(request, id):
         review_count, avg_rating = get_review_stats(id)
         restaurant_annotated = restaurant
         restaurant_annotated.update({"review_count" : review_count, "avg_rating" : avg_rating, "id" : str(restaurant.get("_id"))})  
+
+        # Get reviews for the restaurant.
+        reviews_cursor = collection.find({"type" : "review", "restaurant" : ObjectId(id)})
     else:
         raise Http404("Restaurant not found")
-    return render(request, 'restaurant_review/details.html', {'restaurant': restaurant_annotated})
+    return render(request, 'restaurant_review/details.html', {'restaurant': restaurant_annotated, 'reviews': list(reviews_cursor)})
 
 def create_restaurant(request):
     print('Request for add restaurant page received')
-
     return render(request, 'restaurant_review/create_restaurant.html')
 
 def add_restaurant(request):
@@ -79,10 +82,11 @@ def add_restaurant(request):
         return HttpResponseRedirect(reverse('details', args=(id,)))
 
 def add_review(request, id):
-    try: 
-        restaurant = Restaurant.objects.annotate(avg_rating=Avg('review__rating')).annotate(review_count=Count('review')).get(pk=id)
-    except Restaurant.DoesNotExist:
-        raise Http404("Restaurant doesn't exist")
+    collection = mongodb.get_collection()
+    cursor = collection.find({"type" : "restaurant", "_id" : ObjectId(id)})
+    cursor.next()
+    if cursor.retrieved == 0:
+        raise Http404("Restaurant not found")
 
     try:
         user_name = request.POST['user_name']
@@ -95,43 +99,8 @@ def add_review(request, id):
         messages.add_message(request, messages.INFO, 'Review not added. Include at least a name and rating for review.')
         return HttpResponseRedirect(reverse('details', args=(id,)))  
     else:
-
-        if 'reviewImage' in request.FILES:
-            image_data = request.FILES['reviewImage']
-            print("Original image name = " + image_data.name)
-            print("File size = " + str(image_data.size))
-
-            if (image_data.size > 2048000):
-                messages.add_message(request, messages.INFO, 'Image too big, try again.')
-                return HttpResponseRedirect(reverse('details', args=(id,)))  
-
-            # Create client
-            azure_credential = DefaultAzureCredential(exclude_shared_token_cache_credential=True)
-            blob_service_client = BlobServiceClient(
-                account_url=account_url,
-                credential=azure_credential)
-
-            # Get file name to use in database
-            image_name = str(uuid.uuid4()) + ".png"
-            
-            # Create blob client
-            blob_client = blob_service_client.get_blob_client(container=os.environ['STORAGE_CONTAINER_NAME'], blob=image_name)
-            print("\nUploading to Azure Storage as blob:\n\t" + image_name)
-
-            # Upload file
-            with image_data as data:
-                blob_client.upload_blob(data)
-        else:
-            # No image for review
-            image_name=None
-
-        review = Review()
-        review.restaurant = restaurant
-        review.review_date = timezone.now()
-        review.user_name = user_name
-        review.rating = rating
-        review.review_text = review_text
-        review.image_name = image_name
-        Review.save(review)
+        review_record = mongodb.create_review_record(id, user_name, rating, review_text)
+        document_id_review = collection.insert_one(review_record).inserted_id
+        print("Inserted review document with _id {}".format(document_id_review))
                 
     return HttpResponseRedirect(reverse('details', args=(id,)))

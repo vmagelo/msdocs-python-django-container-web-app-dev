@@ -33,7 +33,7 @@
     </p>
 
     <!-- Button trigger modal -->
-    {% if restaurant.review_set %}
+    {% if reviews %}
         <table class="table">
             <thead>
                 <tr>
@@ -44,7 +44,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for review in restaurant.review_set.all %}
+                {% for review in reviews %}
                     <tr>
                         <td>{{ review.review_date }}</td>
                         <td>{{ review.user_name }}</td>

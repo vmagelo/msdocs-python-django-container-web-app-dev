@@ -1,6 +1,8 @@
 import os
 import pymongo
 from dotenv import load_dotenv
+from datetime import datetime
+from bson import ObjectId
 
 def get_collection():
     # Get connection info from environment variables
@@ -53,10 +55,10 @@ def create_restaurant_record(name, street_address, description):
 def create_review_record(restaurant_id, user_name, rating, review_text):
     ts = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     review_record = {
-        "restaurant": restaurant_id,
+        "restaurant": ObjectId(restaurant_id),
 		"type": "review",
 		"user_name": user_name,
-		"rating": rating,
+		"rating": int(rating),
 		"review_text": review_text,
 		"review_date": ts,
     }
