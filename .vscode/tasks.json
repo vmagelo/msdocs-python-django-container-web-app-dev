@@ -18,6 +18,16 @@
 			"dependsOn": [
 				"docker-build"
 			],
+			"dockerRun": { 
+				"env": {
+					"CONNECTION_STRING": "mongodb://mongoservice:27017",
+					"DB_NAME": "restaurants_reviews",
+					"COLLECTION_NAME": "restaurants_reviews"
+				},
+				"extraHosts":[{
+					"hostname": "mongoservice",
+					"ip": "192.168.86.242"}]
+			},
 			"python": {
 				"args": [
 					"runserver",
@@ -26,6 +36,11 @@
 					"--noreload"
 				],
 				"file": "manage.py"
+			},
+			"problemMatcher": [],
+			"group": {
+				"kind": "build",
+				"isDefault": true
 			}
 		}
 	]

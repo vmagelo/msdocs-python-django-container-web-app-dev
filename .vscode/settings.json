@@ -1,0 +1,14 @@
+{
+    "docker.commands.runInteractive":[
+        {
+        "label": "default interactive run configuration",
+        "template": "docker run --rm -it --add-host mongoservice:192.168.86.242 ${exposedPorts}  -e 'CONNECTION_STRING=mongodb://mongoservice:27017' -e 'DB_NAME=restaurants_reviews' -e 'COLLECTION_NAME=restaurants_reviews' ${tag}"
+        }
+    ],
+    "docker.commands.run": [
+        {
+        "label": "default run configuration",
+        "template": "docker run --rm -d --add-host mongoservice:192.168.86.242 ${exposedPorts}  -e 'CONNECTION_STRING=mongodb://mongoservice:27017' -e 'DB_NAME=restaurants_reviews' -e 'COLLECTION_NAME=restaurants_reviews' ${tag}"
+        }
+    ]
+}

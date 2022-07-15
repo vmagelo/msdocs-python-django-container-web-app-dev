@@ -6,11 +6,12 @@ from bson import ObjectId
 
 def get_collection():
     # Get connection info from environment variables
-    load_dotenv("../.env.local")
+    load_dotenv()
     CONNECTION_STRING = os.getenv('CONNECTION_STRING')
     DB_NAME = os.getenv('DB_NAME')
     COLLECTION_NAME = os.getenv('COLLECTION_NAME')
-
+    print("Connection string = " + str(CONNECTION_STRING))
+    
     # Create a MongoClient
     client = pymongo.MongoClient(CONNECTION_STRING)
     try:

@@ -15,7 +15,7 @@ from requests import RequestException, exceptions
 # Create your views here.
 
 def index(request):
-    print('Request for index page received')  
+    print('Request for index page received') 
 
     collection = mongodb.get_collection()
     results_restaurant_cursor = collection.find({"type" : "restaurant"})

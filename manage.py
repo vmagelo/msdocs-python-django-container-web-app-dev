@@ -11,7 +11,6 @@ def main():
     # Only for Local Development - Load environment variables from the .env file
     if not 'WEBSITE_HOSTNAME' in os.environ:
         print("Loading environment variables for .env file")
-        load_dotenv('./.env.local')
 
     # When running on Azure App Service you should use the production settings.
     settings_module = "azureproject.production" if 'WEBSITE_HOSTNAME' in os.environ else 'azureproject.development'
