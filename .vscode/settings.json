@@ -1,14 +1,34 @@
+/*
+More than one label/template object defined for docker.commands._____  means that user can choose which one to use.
+*/
 {
     "docker.commands.runInteractive":[
         {
-        "label": "default interactive run configuration",
-        "template": "docker run --rm -it --add-host mongoservice:192.168.86.242 ${exposedPorts}  -e 'CONNECTION_STRING=mongodb://mongoservice:27017' -e 'DB_NAME=restaurants_reviews' -e 'COLLECTION_NAME=restaurants_reviews' ${tag}"
+            "label": "Interactive run configuration (default, no MongoDB)",
+            "template": "${config:docker.dockerPath} run --rm -it ${exposedPorts} ${tag}"
+        },
+        {
+            "label": "Interactive run configuration (MongoDB local)",
+            "template": "${config:docker.dockerPath} run --rm -it --add-host mongoservice:192.168.86.242 -p 8000:8000 -p 27017:27017  -e 'CONNECTION_STRING=mongodb://mongoservice:27017' -e 'DB_NAME=restaurants_reviews' -e 'COLLECTION_NAME=restaurants_reviews' ${tag}"
+        },
+        {
+            "label": "Interactive run configuration (MongoDB Azure)",
+            "template": "${config:docker.dockerPath} run --rm -it ${exposedPorts}  -e 'CONNECTION_STRING=mongodb://python-testing:bZ7QdJ8rFlKT1f3Is36952GTPooWURgqRnlsmO4i9cJQkZ1mUD26pBsvuBIm4sf9r6jCgrj56Ed6mDOlVCxC1g==@python-testing.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@python-testing@' -e 'DB_NAME=restaurants_reviews' -e 'COLLECTION_NAME=restaurants_reviews' ${tag}"
         }
+
     ],
     "docker.commands.run": [
         {
-        "label": "default run configuration",
-        "template": "docker run --rm -d --add-host mongoservice:192.168.86.242 ${exposedPorts}  -e 'CONNECTION_STRING=mongodb://mongoservice:27017' -e 'DB_NAME=restaurants_reviews' -e 'COLLECTION_NAME=restaurants_reviews' ${tag}"
+        "label": "Run configuration (default, no MongoDB)",
+        "template": "${config:docker.dockerPath} run --rm -d ${exposedPorts} ${tag}"
+        },
+        {
+            "label": "Run configuration (MongoDB local)",
+            "template": "${config:docker.dockerPath} run --rm -d --add-host mongoservice:192.168.86.242 -p 8000:8000 -p 27017:27017  -e 'CONNECTION_STRING=mongodb://mongoservice:27017' -e 'DB_NAME=restaurants_reviews' -e 'COLLECTION_NAME=restaurants_reviews' ${tag}"
+        },
+        {
+            "label": "Run configuration (MongoDB Azure)",
+            "template": "${config:docker.dockerPath} run --rm -d ${exposedPorts} -e 'CONNECTION_STRING=mongodb://python-testing:bZ7QdJ8rFlKT1f3Is36952GTPooWURgqRnlsmO4i9cJQkZ1mUD26pBsvuBIm4sf9r6jCgrj56Ed6mDOlVCxC1g==@python-testing.mongo.cosmos.azure.com:10255/?ssl=true&retrywrites=false&replicaSet=globaldb&maxIdleTimeMS=120000&appName=@python-testing@' -e 'DB_NAME=restaurants_reviews' -e 'COLLECTION_NAME=restaurants_reviews' ${tag}"
         }
     ]
 }

@@ -24,7 +24,7 @@ def index(request):
     restaurants_annotated = []
     for record in results_restaurant_cursor:
         # For each restaurant record, get the list of reviews so we can calculate average rating
-        print(record.get("name") + ", " + str(record.get("_id")))
+        # print(record.get("name") + ", " + str(record.get("_id")))
         review_count, avg_rating = get_review_stats(str(record.get("_id")))
         new_record = record
         new_record.update({"review_count" : review_count, "avg_rating" : avg_rating, "id" : str(record.get("_id"))})  

@@ -2,7 +2,6 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-from dotenv import load_dotenv
 
 def main():
     """Run administrative tasks."""
@@ -10,7 +9,7 @@ def main():
 
     # Only for Local Development - Load environment variables from the .env file
     if not 'WEBSITE_HOSTNAME' in os.environ:
-        print("Loading environment variables for .env file")
+        print("Loading environment variables passed in locally.")
 
     # When running on Azure App Service you should use the production settings.
     settings_module = "azureproject.production" if 'WEBSITE_HOSTNAME' in os.environ else 'azureproject.development'
