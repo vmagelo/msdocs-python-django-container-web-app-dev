@@ -1,12 +1,12 @@
 # Deploy a Python (Django) app to Azure with Managed Identity 
 
-This Python app is a restaurant review application using the [Django](https://www.djangoproject.com/) framework. The app uses Azure App Service, Azure Database for PostgreSQL relational database service, and Azure Storage. When deployed, Azure managed identity allows the web app hosted in App Service to connect to the database and storage resources without the need to specify sensitive connection info in code or environment variables.
+This Python app is a restaurant review application using the [Django](https://www.djangoproject.com/) framework. The app is intended to be used as a container running on  Azure App Service with a connection to a Azure Cosmos DB API for MongoDB. When deployed, Azure managed identity allows the App Service to pull container images from an Azure Container Registry. MongoDB connection info is passed to the code through environment variables. 
 
-This sample app can be run locally and then deployed to Azure, hosted in a fully managed Azure App Service. For more information on how to use this web app, see the  [*TBD - coming soon*](TBD).
+This sample app can be run locally and then deployed to Azure, hosted in a fully managed Azure App Service. For more information on how to use this web app, see the  [TBD](TBD).
 
 If you need an Azure account, you can [create on for free](https://azure.microsoft.com/free/).
 
-A Flask sample application with similar functionality is at https://github.com/Azure-Samples/msdocs-flask-web-app-managed-identity.
+A Flask sample application with similar functionality is at [TBD](TBD).
 
 ## Requirements
 
@@ -15,22 +15,7 @@ The [requirements.txt](./requirements.txt) has the following packages:
 | Package | Description |
 | ------- | ----------- |
 | [Django](https://pypi.org/project/Django/) | Web application framework. |
-| [pyscopg2-binary](https://pypi.org/project/psycopg-binary/) | PostgreSQL database adapter for Python. |
-| [python-dotenv](https://pypi.org/project/python-dotenv/) | Read key-value pairs from .env file and set them as environment variables. In this sample app, environment variables describe how to connect to the database and storage resources. Because managed identity is used no sensitive information is included in environment variables. <br><br> This package is used in the [manage.py](./manage.py) file to load environment variables. |
-| [whitenoise](https://pypi.org/project/whitenoise/) | Static file serving for WSGI applications, used in the deployed app. <br><br> This package is used in the [azureproject/production.py](./azureproject/production.py) file, which configures production settings. |
-| [azure-blob-storage](https://pypi.org/project/azure-storage/) | Microsoft Azure Storage SDK for Python |
-| [azure-identity](https://pypi.org/project/azure-identity/) | Microsoft Azure Identity Library for Python |
-
-## DefaultAzureCredential
-
-The [DefaultAzureCredential](https://docs.microsoft.com/python/api/azure-identity/azure.identity.defaultazurecredential) is used in the [views.py](./restaurant_review/views.py) file. For example:
-
-```python
-from azure.identity import DefaultAzureCredential
-from azure.storage.blob import BlobServiceClient
-
-azure_credential = DefaultAzureCredential(exclude_shared_token_cache_credential=True)
-blob_service_client = BlobServiceClient(
-    account_url=account_url,
-    credential=azure_credential)
-```
+| [gunicorn](https://pypi.org/project/gunicorn/) | Gunicorn ‘Green Unicorn’ is a Python WSGI HTTP Server for UNIX. |
+| [pymongo](https://pypi.org/project/pymongo/) | The PyMongo distribution contains tools for interacting with MongoDB database from Python. |
+| [requests](https://pypi.org/project/requests/) | An HTTP library |
+| [whitenoise](https://pypi.org/project/whitenoise/) | Static file serving for WSGI applications, used in the deployed app. <br><br> This package is used in the [azureproject/settings.py](./azureproject/azureproject/settings.py) file. |
