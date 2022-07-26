@@ -11,7 +11,7 @@
                 <li>Check that you ran a <a href="https://docs.djangoproject.com/en/4.0/topics/migrations/">migration</a> first with 
                   "python manage.py migrate".
                 </li>
-                <li>Check that an <em>.env</em> file exists and defines the environment variables DBHOST, DBNAME, DBUSER, STORAGE_CONTAINER_NAME, and STORAGE_ACCOUNT_NAME.
+                <li>Check that an <em>.env</em> file exists and defines the environment variables required by the app.
                 </li>
                 <li>Check that the database exists in your local MongoDB server.                  
                 </li>
@@ -22,10 +22,10 @@
                 <li>Check that you ran a <a href="https://docs.djangoproject.com/en/4.0/topics/migrations/">migration</a> first with 
                   "python manage.py migrate".                  
                 </li>
-                <li>Check that the environment variables (DBHOST, DBNAME, DBUSER, STORAGE_CONTAINER_NAME, and STORAGE_ACCOUNT_NAME) are defined as 
-                  <a href="https://docs.microsoft.com/azure/app-service/configure-common">configuration settings</a>) for the service.
+                <li>Check that the environment variables are defined as 
+                  <a href="https://docs.microsoft.com/azure/app-service/configure-common">configuration settings</a> for the service.
                 </li>
-                <li>Check that the database referenced in the DBNAME environment exists in the Azure PostgresSQL service.                  
+                <li>Check that any database or storage connection information expected by the code are defined.                  
                 </li>
               </ul>
             </div>                   
