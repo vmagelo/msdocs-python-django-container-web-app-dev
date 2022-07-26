@@ -30,6 +30,8 @@ COLLECTION_NAME=restaurants_reviews
 
 For a local MongoDB instance, the connection string is of the form `mongodb://127.0.0.1:27017`. An Azure Cosmos DB API for MongoDB connections string is of the form `mongodb://<server-name>:<password>@<server-name>.mongo.cosmos.azure.com:10255/?ssl=true&<other-parameters>`.
 
+The *.vscode* directory *settings.json* and *tasks.json* are configured either a MongoDB local connection or Azure Cosmos DB connection. The tasks and templates in *.vscode* are only used when using Visual Studio Code locally.
+
 ## Requirements
 
 The [requirements.txt](./requirements.txt) has the following packages:
