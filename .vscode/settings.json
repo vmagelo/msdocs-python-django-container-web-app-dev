@@ -9,7 +9,7 @@ More than one label/template object defined for docker.commands._____  means tha
         },
         {
             "label": "Interactive run configuration (MongoDB local)",
-            "template": "${config:docker.dockerPath} run --rm -it --add-host mongoservice:192.168.86.242 -p 8000:8000 -p 27017:27017  -e 'CONNECTION_STRING=mongodb://mongoservice:27017' -e 'DB_NAME=restaurants_reviews' -e 'COLLECTION_NAME=restaurants_reviews' ${tag}"
+            "template": "${config:docker.dockerPath} run --rm -it --add-host mongoservice:192.168.86.243 -p 8000:8000 -p 27017:27017  -e 'CONNECTION_STRING=mongodb://mongoservice:27017' -e 'DB_NAME=restaurants_reviews' -e 'COLLECTION_NAME=restaurants_reviews' ${tag}"
         },
         {
             "label": "Interactive run configuration (MongoDB Azure)",
@@ -24,7 +24,7 @@ More than one label/template object defined for docker.commands._____  means tha
         },
         {
             "label": "Run configuration (MongoDB local)",
-            "template": "${config:docker.dockerPath} run --rm -d --add-host mongoservice:192.168.86.242 -p 8000:8000 -p 27017:27017  -e 'CONNECTION_STRING=mongodb://mongoservice:27017' -e 'DB_NAME=restaurants_reviews' -e 'COLLECTION_NAME=restaurants_reviews' ${tag}"
+            "template": "${config:docker.dockerPath} run --rm -d --add-host mongoservice:192.168.86.243 -p 8000:8000 -p 27017:27017  -e 'CONNECTION_STRING=mongodb://mongoservice:27017' -e 'DB_NAME=restaurants_reviews' -e 'COLLECTION_NAME=restaurants_reviews' ${tag}"
         },
         {
             "label": "Run configuration (MongoDB Azure)",
