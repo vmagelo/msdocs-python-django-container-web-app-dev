@@ -32,6 +32,8 @@ COLLECTION_NAME=restaurants_reviews
 
 For a local MongoDB instance, the connection string is of the form `mongodb://127.0.0.1:27017`. An Azure Cosmos DB API for MongoDB connections string is of the form `mongodb://<server-name>:<password>@<server-name>.mongo.cosmos.azure.com:10255/?ssl=true&<other-parameters>`.
 
+This app was designed to be containerized and run on App Service. If you want to deploy to App Service without containerizing it first, then be sure to set the *subpath* setting so that App Service finds the *manage.py* in the *azureporject* folder.
+
 ## Requirements
 
 The [requirements.txt](./requirements.txt) has the following packages:
@@ -43,3 +45,4 @@ The [requirements.txt](./requirements.txt) has the following packages:
 | [pymongo](https://pypi.org/project/pymongo/) | The PyMongo distribution contains tools for interacting with MongoDB database from Python. |
 | [requests](https://pypi.org/project/requests/) | An HTTP library |
 | [whitenoise](https://pypi.org/project/whitenoise/) | Static file serving for WSGI applications, used in the deployed app. <br><br> This package is used in the [azureproject/settings.py](./azureproject/azureproject/settings.py) file. |
+
