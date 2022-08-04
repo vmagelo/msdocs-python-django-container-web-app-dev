@@ -26,7 +26,7 @@
 				},
 				"extraHosts":[{
 					"hostname": "mongoservice",
-					"ip": "192.168.86.242"}]
+					"ip": "<YOUR-IP-ADDRESS>"}]
 			},
 			"python": {
 				"args": [
