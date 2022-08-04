@@ -1,11 +1,25 @@
 {
-    "configurations": [        
-        
+    "configurations": [
         {
-            "name": "Docker: Python - Django",
+            "name": "Python: Python (MongoDB Azure)",
             "type": "docker",
             "request": "launch",
-            "preLaunchTask": "docker-run: debug",
+            "preLaunchTask": "docker-run: debug (MongoDB Azure)",
+            "python": {
+                "pathMappings": [
+                    {
+                        "localRoot": "${workspaceFolder}",
+                        "remoteRoot": "/app"
+                    }
+                ],
+                "projectType": "django"
+            }
+        },
+        {
+            "name": "Docker: Python (MongoDB local)",
+            "type": "docker",
+            "request": "launch",
+            "preLaunchTask": "docker-run: debug (MongoDB local)",
             "python": {
                 "pathMappings": [
                     {
