@@ -14,7 +14,7 @@
 		},
 		{
 			"type": "docker-run",
-			"label": "docker-run: debug",
+			"label": "docker-run: debug (MongoDB local)",
 			"dependsOn": [
 				"docker-build"
 			],
@@ -42,6 +42,35 @@
 				"kind": "build",
 				"isDefault": true
 			}
+		},
+		{
+			"type": "docker-run",
+			"label": "docker-run: debug (MongoDB Azure)",
+			"dependsOn": [
+				"docker-build"
+			],
+			"dockerRun": { 
+				"env": {
+					"CONNECTION_STRING": "<CONNECTION-STRING>",
+					"DB_NAME": "restaurants_reviews",
+					"COLLECTION_NAME": "restaurants_reviews"
+				},
+			},
+			"python": {
+				"args": [
+					"runserver",
+					"0.0.0.0:8000",
+					"--nothreading",
+					"--noreload"
+				],
+				"file": "manage.py"
+			},
+			"problemMatcher": [],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+
 		}
 	]
 }
