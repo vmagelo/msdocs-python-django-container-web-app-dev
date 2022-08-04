@@ -35,7 +35,7 @@
 					"--nothreading",
 					"--noreload"
 				],
-				"file": "manage.py"
+				"file": "azureproject/manage.py"
 			},
 			"problemMatcher": [],
 			"group": {
@@ -63,7 +63,7 @@
 					"--nothreading",
 					"--noreload"
 				],
-				"file": "manage.py"
+				"file": "azureproject/manage.py"
 			},
 			"problemMatcher": [],
 			"group": {

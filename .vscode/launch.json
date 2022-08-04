@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "name": "Python: Python (MongoDB Azure)",
+            "name": "Docker: Python (MongoDB Azure)",
             "type": "docker",
             "request": "launch",
             "preLaunchTask": "docker-run: debug (MongoDB Azure)",
@@ -9,7 +9,7 @@
                 "pathMappings": [
                     {
                         "localRoot": "${workspaceFolder}",
-                        "remoteRoot": "/app"
+                        "remoteRoot": "/app/azureproject"
                     }
                 ],
                 "projectType": "django"
@@ -24,7 +24,7 @@
                 "pathMappings": [
                     {
                         "localRoot": "${workspaceFolder}",
-                        "remoteRoot": "/app"
+                        "remoteRoot": "/app/azureproject"
                     }
                 ],
                 "projectType": "django"
